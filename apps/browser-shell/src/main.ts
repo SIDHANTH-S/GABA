@@ -63,7 +63,8 @@ app.whenReady().then(async () => {
       const contentView = browserRuntime.getWebContentView();
 
       if (!contentView) {
-        throw new Error('Failed to create web content view');
+        console.log('[App] Web content view not available yet, skipping CDP setup');
+        return;
       }
 
       // Attach CDP session to web content view

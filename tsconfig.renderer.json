@@ -1,11 +1,14 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/renderer",
     "lib": ["ES2022", "DOM"],
     "jsx": "react-jsx",
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["apps/frontend/src/**/*", "shared/**/*"],
   "exclude": ["node_modules", "dist"]

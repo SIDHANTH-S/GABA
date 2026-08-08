@@ -94,7 +94,12 @@ knowledge_base/ (from ai-browser-mvp)
 7. Verify checkpoint system
 
 ### Known Issues to Address:
-- None identified during merge process
-- All import paths updated for new directory structure
-- Database schema path resolution enhanced
-- Vite configuration adjusted for monorepo structure
+- ✅ Fixed: BrowserRuntime missing getWebContentView method (added method)
+- ✅ Fixed: TypeScript baseUrl deprecation warning (added ignoreDeprecations)
+- ✅ Fixed: Removed duplicate directories (renderer, electron-main, agent-core, semantic-parser)
+- ✅ Fixed: Updated package.json to use workspace-specific scripts
+- ✅ Fixed: Removed root-level vite.config.ts (uses workspace-specific configs)
+- ✅ Fixed: TypeScript configs to be standalone (no extends)
+- ✅ Fixed: All import paths updated for new directory structure
+- ✅ Fixed: Database schema path resolution enhanced
+- ✅ Fixed: Web content view availability check made more graceful
