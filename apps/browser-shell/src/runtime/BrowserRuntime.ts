@@ -1,4 +1,5 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, WebContentsView, app } from 'electron';
+import * as path from 'path';
 import { TabManager } from './TabManager';
 import { BrowserTabState } from './BrowserTab';
 import { BrowserController } from './BrowserController';
@@ -9,6 +10,7 @@ import { HistoryManager } from './HistoryManager';
 import { SessionManager } from './SessionManager';
 import { DownloadManager, DownloadState } from './DownloadManager';
 import { AgentController } from './AgentController';
+import { attachViewShortcuts } from '../agent-core/global-shortcuts';
 
 export interface BrowserState {
   activeTabId: string | null;
@@ -40,6 +42,10 @@ export class BrowserRuntime {
   
   private mainWindow: BrowserWindow;
   private stateBroadcastTimeout: NodeJS.Timeout | null = null;
+  
+  public chromeView?: WebContentsView;
+  public workspaceView?: WebContentsView;
+  public overlayView?: WebContentsView;
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
@@ -77,6 +83,52 @@ export class BrowserRuntime {
     });
   }
 
+  public initializeUIViews() {
+    const webPreferences = {
+      preload: path.join(__dirname, '../preload.js'), // main is at dist/main.js
+      contextIsolation: true, 
+      nodeIntegration: false,
+    };
+
+    this.chromeView = new WebContentsView({ webPreferences });
+    this.workspaceView = new WebContentsView({ webPreferences });
+    this.overlayView = new WebContentsView({ webPreferences: { ...webPreferences, transparent: true } });
+
+    this.chromeView.setBackgroundColor('#00000000');
+    this.workspaceView.setBackgroundColor('#00000000');
+    this.overlayView.setBackgroundColor('#00000000');
+
+    this.mainWindow.contentView.addChildView(this.chromeView);
+    this.mainWindow.contentView.addChildView(this.workspaceView);
+    this.mainWindow.contentView.addChildView(this.overlayView);
+
+    const isDev = !app.isPackaged;
+    // We run node from project root (for apps/browser-shell) or we use the dev server
+    const baseUrl = isDev ? 'http://localhost:8443' : `file://${path.join(__dirname, '../../../frontend/dist/index.html')}`;
+
+    this.chromeView.webContents.loadURL(`${baseUrl}?view=chrome`);
+    this.workspaceView.webContents.loadURL(`${baseUrl}?view=workspace`);
+    this.overlayView.webContents.loadURL(`${baseUrl}?view=overlay`);
+
+    attachViewShortcuts(this.chromeView.webContents, this);
+    attachViewShortcuts(this.workspaceView.webContents, this);
+    attachViewShortcuts(this.overlayView.webContents, this);
+
+    this.windowManager.recalculateBounds();
+  }
+
+  public broadcastIPC(channel: string, ...args: any[]) {
+    const views = [this.chromeView, this.workspaceView, this.overlayView];
+    views.forEach(v => {
+      if (v && !v.webContents.isDestroyed()) {
+        v.webContents.send(channel, ...args);
+      }
+    });
+    if (!this.mainWindow.isDestroyed()) {
+      this.mainWindow.webContents.send(channel, ...args);
+    }
+  }
+
   public getState(): BrowserState {
     const activeTab = this.tabManager.getActiveTab();
     
@@ -99,15 +151,17 @@ export class BrowserRuntime {
   }
 
   public broadcastState() {
-    // Send state to React via IPC
     const state = this.getState();
-    if (!this.mainWindow.isDestroyed()) {
-      this.mainWindow.webContents.send('browser:state-update', state);
-    }
+    this.broadcastIPC('browser:state-update', state);
   }
 
   public getWebContentView() {
     const activeTab = this.tabManager.getActiveTab();
     return activeTab?.view || null;
+  }
+
+  public getWindowBounds() {
+    if (this.mainWindow.isDestroyed()) return null;
+    return this.mainWindow.getContentBounds();
   }
 }

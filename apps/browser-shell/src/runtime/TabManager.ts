@@ -6,7 +6,7 @@ export class TabManager {
   public tabs: BrowserTab[] = [];
   public activeTabId: string | null = null;
   private runtime: BrowserRuntime;
-  private mainWindow: BrowserWindow;
+  public mainWindow: BrowserWindow;
   private latestBounds: { x: number, y: number, width: number, height: number } | null = null;
 
   constructor(runtime: BrowserRuntime, mainWindow: BrowserWindow) {
@@ -19,10 +19,10 @@ export class TabManager {
     this.tabs.push(tab);
     this.mainWindow.contentView.addChildView(tab.view);
     
-    if (this.latestBounds) {
-      tab.setBounds(this.latestBounds);
-    }
+    // Now safe to load the URL
+    tab.view.webContents.loadURL(url || 'https://google.com');
     
+    // We let WindowManager calculate the initial bounds
     this.activateTab(tab.id);
     return tab.id;
   }
@@ -59,16 +59,13 @@ export class TabManager {
     // For WebContentsView, removing and adding to contentView is best, or setting bounds to 0.
     
     this.tabs.forEach(tab => {
-      if (tab.id === id) {
-        if (this.latestBounds) {
-          tab.setBounds(this.latestBounds);
-        }
-      } else {
+      if (tab.id !== id) {
         // Move offscreen or resize to 0
-        tab.setBounds({ x: -9999, y: -9999, width: 0, height: 0 });
+        tab.view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
       }
     });
 
+    this.recalculateBounds();
     this.runtime.eventBus.emit('state-changed');
   }
 
@@ -76,32 +73,11 @@ export class TabManager {
     return this.tabs.find(t => t.id === this.activeTabId) || null;
   }
 
-  public setBounds(bounds: { x: number, y: number, width: number, height: number }) {
-    this.latestBounds = bounds;
-    const activeTab = this.getActiveTab();
-    if (activeTab) {
-      activeTab.setBounds(bounds);
-    }
-  }
+  // We no longer need setBounds here since WindowManager sets it directly,
+  // but we can leave a stub if needed. Actually we'll remove it.
 
   public recalculateBounds() {
     if (this.mainWindow.isDestroyed()) return;
-    
-    const { width, height } = this.mainWindow.getContentBounds();
-    const windowManager = this.runtime.windowManager;
-    const currentWorkspaceWidth = windowManager.workspaceWidth;
-    
-    // Top Chrome height: 42px (TabStrip) + 44px (Toolbar) = 86px.
-    const chromeHeight = 86;
-    const splitterWidth = currentWorkspaceWidth > 0 ? 4 : 0;
-    
-    const bounds = {
-      x: 0,
-      y: chromeHeight,
-      width: Math.max(0, width - currentWorkspaceWidth - splitterWidth),
-      height: Math.max(0, height - chromeHeight)
-    };
-    
-    this.setBounds(bounds);
+    this.runtime.windowManager.recalculateBounds();
   }
 }

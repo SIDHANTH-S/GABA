@@ -18,7 +18,7 @@ export class BrowserController {
     });
 
     ipcMain.on('browser:setBounds', (event, bounds) => {
-      this.runtime.tabManager.setBounds(bounds);
+      // Ignored: Bounds are now calculated natively by WindowManager
     });
 
     ipcMain.on('browser:setWorkspaceWidth', (event, width: number, save: boolean = false) => {

@@ -20,29 +20,51 @@ function sendToggle(win: BrowserWindow, source: string): void {
   win.webContents.send(CHANNELS.UI_TOGGLE_COMMAND_BAR);
 }
 
+import type { BrowserRuntime } from '../runtime/BrowserRuntime';
+import type { WebContents } from 'electron';
+
+export function attachViewShortcuts(wc: WebContents, runtime: BrowserRuntime): void {
+  wc.on('before-input-event', (event, input) => {
+    if (input.type === 'keyDown') {
+      // Ctrl+K
+      if ((input.control || input.meta) && input.key.toLowerCase() === 'k') {
+        runtime.broadcastIPC(CHANNELS.UI_TOGGLE_COMMAND_BAR);
+        event.preventDefault();
+      }
+      // Escape
+      if (input.key === 'Escape') {
+        runtime.broadcastIPC(CHANNELS.UI_DISMISS_OVERLAYS);
+      }
+      // Ctrl+Shift+I (DevTools)
+      if ((input.control || input.meta) && input.shift && input.key.toLowerCase() === 'i') {
+        const activeTab = runtime.tabManager.getActiveTab();
+        if (activeTab && activeTab.view && !activeTab.view.webContents.isDestroyed()) {
+          const tabWc = activeTab.view.webContents;
+          if (tabWc.isDevToolsOpened()) {
+            tabWc.closeDevTools();
+          } else {
+            tabWc.openDevTools({ mode: 'right' });
+          }
+        }
+        event.preventDefault();
+      }
+    }
+  });
+}
+
 /**
  * Register all shortcuts
  */
 export function registerGlobalShortcuts(win: BrowserWindow): void {
-  // Global shortcut: works even when BrowserView has focus
+  // Global shortcut (OS level) for global activation if needed.
+  // We'll leave CommandOrControl+K since it might be a launcher feature,
+  // but for DevTools we strictly use local shortcuts.
   globalShortcut.register('CommandOrControl+K', () => {
     sendToggle(win, 'globalShortcut');
   });
   
-  // Window-level input event: catches keystrokes within the main window
-  win.webContents.on('before-input-event', (event, input) => {
-    if (input.type === 'keyDown') {
-      if ((input.control || input.meta) && input.key.toLowerCase() === 'k') {
-        sendToggle(win, 'before-input-event');
-        event.preventDefault();
-      }
-      if (input.key === 'Escape') {
-        win.webContents.send(CHANNELS.UI_DISMISS_OVERLAYS);
-      }
-    }
-  });
-  
-  console.log('[Shortcuts] Global shortcuts registered');
+  // Note: We used to attach 'before-input-event' to win.webContents here,
+  // but now we attach it to each individual WebContentsView via attachViewShortcuts.
 }
 
 /**

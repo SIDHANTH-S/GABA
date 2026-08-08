@@ -1,6 +1,7 @@
-import { WebContentsView, BrowserWindow } from 'electron';
+import { WebContentsView, BrowserWindow, Menu } from 'electron';
 import { randomUUID } from 'crypto';
 import { BrowserRuntime } from './BrowserRuntime';
+import { attachViewShortcuts } from '../agent-core/global-shortcuts';
 
 export interface BrowserTabState {
   id: string;
@@ -23,9 +24,10 @@ export class BrowserTab {
     this.id = randomUUID();
     this.runtime = runtime;
     this.view = new WebContentsView();
+    
+    attachViewShortcuts(this.view.webContents, this.runtime);
 
     this.setupListeners();
-    this.view.webContents.loadURL(url);
   }
 
   public get state(): BrowserTabState {
@@ -62,6 +64,22 @@ export class BrowserTab {
         this.favicon = favicons[0];
         this.runtime.eventBus.emit('state-changed');
       }
+    });
+
+    // Native Context Menu for Inspect Element
+    wc.on('context-menu', (event, params) => {
+      const menu = Menu.buildFromTemplate([
+        {
+          label: 'Inspect Element',
+          click: () => {
+            wc.inspectElement(params.x, params.y);
+            if (!wc.isDevToolsOpened()) {
+              wc.openDevTools({ mode: 'right' });
+            }
+          }
+        }
+      ]);
+      menu.popup();
     });
   }
 

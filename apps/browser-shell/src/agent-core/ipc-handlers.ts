@@ -18,13 +18,17 @@ import { replayWorkflow } from '../agent-core/workflow-replayer';
 import { resolveCheckpoint } from '../agent-core/verifier';
 import type { CDPSession } from '../shared/types';
 
+import type { BrowserRuntime } from '../runtime/BrowserRuntime';
+
 let currentSession: CDPSession | null = null;
+let currentRuntime: BrowserRuntime | null = null;
 
 /**
  * Register all IPC handlers
  */
-export function registerIPCHandlers(win: BrowserWindow, session: CDPSession): void {
+export function registerIPCHandlers(runtime: BrowserRuntime, session: CDPSession): void {
   currentSession = session;
+  currentRuntime = runtime;
   
   // Page understanding
   ipcMain.handle(CHANNELS.PAGE_GET_SEMANTIC_MODEL, async () => {
@@ -55,8 +59,10 @@ export function registerIPCHandlers(win: BrowserWindow, session: CDPSession): vo
   // Agent task execution
   ipcMain.handle(CHANNELS.AGENT_RUN_TASK, async (_, payload: { intent: string }) => {
     if (!currentSession) throw new Error('No CDP session');
+    if (!currentRuntime || !currentRuntime.getWindowBounds()) throw new Error('No runtime');
     
-    return await runPipeline(payload.intent, win, currentSession);
+    // Pass the main window via runtime if pipeline needs it, or just pass runtime
+    return await runPipeline(payload.intent, (currentRuntime as any).mainWindow, currentSession);
   });
   
   // Checkpoint resolution
@@ -100,9 +106,10 @@ export function registerIPCHandlers(win: BrowserWindow, session: CDPSession): vo
     const plan = replayWorkflow(workflow);
     
     if (!currentSession) throw new Error('No CDP session');
+    if (!currentRuntime || !currentRuntime.getWindowBounds()) throw new Error('No runtime');
     
     // Execute via pipeline
-    return await runPipeline(plan.rawCommand, win, currentSession);
+    return await runPipeline(plan.rawCommand, (currentRuntime as any).mainWindow, currentSession);
   });
   
   // Data extraction
@@ -133,10 +140,10 @@ export function registerIPCHandlers(win: BrowserWindow, session: CDPSession): vo
   });
   
   // Overlay visibility control
-  ipcMain.handle(CHANNELS.UI_SET_OVERLAY_VISIBLE, async (_, payload: { visible: boolean }) => {
-    const { setContentViewVisible } = require('./window-manager');
-    setContentViewVisible(!payload.visible);
+  ipcMain.on('ui:set-overlay-visible', (_, payload: { name: string, visible: boolean }) => {
+    if (currentRuntime && currentRuntime.windowManager) {
+      currentRuntime.windowManager.setOverlayVisible(payload.visible);
+    }
   });
-  
-  console.log('[IPC] All handlers registered');
+
 }
