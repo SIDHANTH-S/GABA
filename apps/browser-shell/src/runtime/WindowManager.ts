@@ -100,12 +100,16 @@ export class WindowManager {
     // 3. PageView (The active tab)
     const activeTab = this.runtime.tabManager.getActiveTab();
     if (activeTab) {
-      activeTab.view.setBounds({
-        x: 0,
-        y: chromeHeight,
-        width: pageViewWidth,
-        height: viewsHeight
-      });
+      if (activeTab.state.url === 'gaba://newtab' || activeTab.state.url === 'gaba://newtab/') {
+        activeTab.view.setBounds({ x: -9999, y: -9999, width: 0, height: 0 });
+      } else {
+        activeTab.view.setBounds({
+          x: 0,
+          y: chromeHeight,
+          width: pageViewWidth,
+          height: viewsHeight
+        });
+      }
     }
 
     // 4. OverlayView
@@ -121,6 +125,20 @@ export class WindowManager {
         this.runtime.overlayView.setBounds({
           x: -9999, y: -9999, width: 0, height: 0
         });
+      }
+    }
+
+    // 5. NewTabView
+    if (this.runtime.newTabView && !this.runtime.newTabView.webContents.isDestroyed()) {
+      if (activeTab && (activeTab.state.url === 'gaba://newtab' || activeTab.state.url === 'gaba://newtab/')) {
+        this.runtime.newTabView.setBounds({
+          x: 0,
+          y: chromeHeight,
+          width: pageViewWidth,
+          height: viewsHeight
+        });
+      } else {
+        this.runtime.newTabView.setBounds({ x: -9999, y: -9999, width: 0, height: 0 });
       }
     }
   }

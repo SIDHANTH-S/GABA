@@ -8,6 +8,8 @@ import { HUD } from "./components/agent/HUD/HUD";
 import { CheckpointModal } from "./components/agent/Checkpoint/CheckpointModal";
 import { useAgent } from "./hooks/useAgent";
 import { useCommandBar } from "./hooks/useCommandBar";
+import { useBrowserStore } from "./store/browser";
+import StartPage from "./components/browser/StartPage";
 
 function WorkspaceWithSplitter() {
   const [isDragging, setIsDragging] = useState(false);
@@ -99,6 +101,14 @@ export default function App() {
           <HUD />
           <CheckpointModal />
         </div>
+      </div>
+    );
+  }
+
+  if (view === "newtab") {
+    return (
+      <div className="h-screen w-screen overflow-hidden">
+        <StartPage />
       </div>
     );
   }

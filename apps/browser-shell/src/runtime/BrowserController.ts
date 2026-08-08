@@ -30,7 +30,7 @@ export class BrowserController {
     });
 
     ipcMain.on('browser:openTab', (event, url?: string) => {
-      this.runtime.tabManager.createTab(url || 'https://google.com');
+      this.runtime.tabManager.createTab(url || 'gaba://newtab');
     });
 
     ipcMain.on('browser:closeTab', (event, id: string) => {

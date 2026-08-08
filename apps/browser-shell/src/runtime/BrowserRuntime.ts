@@ -46,6 +46,7 @@ export class BrowserRuntime {
   public chromeView?: WebContentsView;
   public workspaceView?: WebContentsView;
   public overlayView?: WebContentsView;
+  public newTabView?: WebContentsView;
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
@@ -93,14 +94,17 @@ export class BrowserRuntime {
     this.chromeView = new WebContentsView({ webPreferences });
     this.workspaceView = new WebContentsView({ webPreferences });
     this.overlayView = new WebContentsView({ webPreferences: { ...webPreferences, transparent: true } });
+    this.newTabView = new WebContentsView({ webPreferences });
 
     this.chromeView.setBackgroundColor('#00000000');
     this.workspaceView.setBackgroundColor('#00000000');
     this.overlayView.setBackgroundColor('#00000000');
+    this.newTabView.setBackgroundColor('#ffffff');
 
     this.mainWindow.contentView.addChildView(this.chromeView);
     this.mainWindow.contentView.addChildView(this.workspaceView);
     this.mainWindow.contentView.addChildView(this.overlayView);
+    this.mainWindow.contentView.addChildView(this.newTabView);
 
     const isDev = !app.isPackaged;
     // We run node from project root (for apps/browser-shell) or we use the dev server
@@ -109,16 +113,18 @@ export class BrowserRuntime {
     this.chromeView.webContents.loadURL(`${baseUrl}?view=chrome`);
     this.workspaceView.webContents.loadURL(`${baseUrl}?view=workspace`);
     this.overlayView.webContents.loadURL(`${baseUrl}?view=overlay`);
+    this.newTabView.webContents.loadURL(`${baseUrl}?view=newtab`);
 
     attachViewShortcuts(this.chromeView.webContents, this);
     attachViewShortcuts(this.workspaceView.webContents, this);
     attachViewShortcuts(this.overlayView.webContents, this);
+    attachViewShortcuts(this.newTabView.webContents, this);
 
     this.windowManager.recalculateBounds();
   }
 
   public broadcastIPC(channel: string, ...args: any[]) {
-    const views = [this.chromeView, this.workspaceView, this.overlayView];
+    const views = [this.chromeView, this.workspaceView, this.overlayView, this.newTabView];
     views.forEach(v => {
       if (v && !v.webContents.isDestroyed()) {
         v.webContents.send(channel, ...args);

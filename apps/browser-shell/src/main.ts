@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, protocol } from 'electron';
 import * as path from 'path';
 import { config } from 'dotenv';
 import { BrowserRuntime } from './runtime/BrowserRuntime';
@@ -21,7 +21,7 @@ function createWindow() {
     height: 900,
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#e8e8e8', // Match your toolbar/chrome background
+      color: 'rgba(0,0,0,0)', // Completely transparent so the HTML header shows through perfectly
       symbolColor: '#2e2e2e',
       height: 42 // Match the height of the TabStrip (42px)
     },
@@ -47,6 +47,11 @@ function createWindow() {
 app.whenReady().then(async () => {
   try {
     console.log('[App] Initializing...');
+
+    // Register internal protocol for New Tab
+    protocol.registerStringProtocol('gaba', (request, callback) => {
+      callback({ mimeType: 'text/html', data: '<html><body></body></html>' });
+    });
 
     // Initialize database
     await initDB();

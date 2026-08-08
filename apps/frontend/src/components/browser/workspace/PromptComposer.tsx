@@ -35,10 +35,11 @@ export default function PromptComposer() {
   };
 
   return (
-    <div className="w-full">
-      {/* Composer */}
-      <form onSubmit={handleSubmit} className="relative h-[68px] w-full rounded-t-[20px] bg-[var(--color-subtle)] shadow-[var(--shadow-composer)]">
-        <div className="flex size-full items-center gap-[12px] overflow-hidden rounded-t-[20px] px-[20px]">
+    <div className="w-full min-w-0">
+      {/* min-h instead of a hard h-[68px] so the row can grow if the
+          input's placeholder/font ever needs more room. */}
+      <form onSubmit={handleSubmit} className="relative min-h-[56px] w-full rounded-t-[20px] bg-[var(--color-subtle)] shadow-[var(--shadow-composer)]">
+        <div className="flex size-full min-w-0 items-center gap-3 overflow-hidden rounded-t-[20px] px-4 py-3">
           <SparkleGlowIcon />
           <input
             value={value}
@@ -52,13 +53,16 @@ export default function PromptComposer() {
             disabled={isSubmitting}
             placeholder={isSubmitting ? "Agent running..." : "Ask, automate, or tell me what to do..."}
             aria-label="Prompt the assistant"
-            className="min-w-px flex-1 bg-transparent text-[11px] font-normal leading-[normal] text-[var(--color-ink)] outline-none placeholder:text-[rgba(46,46,46,0.4)] disabled:opacity-50"
+            // min-w-0 (not min-w-px) is the correct idiom: it lets this
+            // input shrink freely inside the flex row instead of
+            // fighting the sibling icons for space.
+            className="min-w-0 flex-1 bg-transparent text-[11px] font-normal leading-normal text-[var(--color-ink)] outline-none placeholder:text-[rgba(46,46,46,0.4)] disabled:opacity-50"
             style={{ fontVariationSettings: '"wdth" 100' }}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isSubmitting || !value.trim()}
-            aria-label="Send" 
+            aria-label="Send"
             className="shrink-0 rounded-full transition duration-150 hover:brightness-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/50 disabled:opacity-40"
           >
             <SendActionIcon />
@@ -67,12 +71,14 @@ export default function PromptComposer() {
         <div aria-hidden className="pointer-events-none absolute inset-0 rounded-t-[20px] border-[1.5px] border-[rgba(10,132,255,0.22)]" />
       </form>
 
-      {/* Benefits */}
-      <div className="flex h-[34px] items-center justify-center gap-[5.656px] rounded-b-[20px] bg-[var(--color-success-wash)] px-[5.656px] pb-[4.525px] pt-[3.394px]">
+      {/* flex-wrap replaces whitespace-nowrap-with-no-escape-hatch:
+          on a narrow rail these 4 items now wrap to a 2nd line instead
+          of silently overflowing past the sidebar edge. */}
+      <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-b-[20px] bg-[var(--color-success-wash)] px-2 py-1.5">
         {BENEFITS.map(({ icon: Icon, label }) => (
-          <div key={label} className="flex items-center gap-[2.765px]">
+          <div key={label} className="flex shrink-0 items-center gap-1">
             <Icon />
-            <p className="whitespace-nowrap text-[6.452px] font-[510] leading-[normal] text-[var(--color-success)]" style={{ fontVariationSettings: '"wdth" 100' }}>
+            <p className="whitespace-nowrap text-[6.5px] font-medium leading-normal text-[var(--color-success)]" style={{ fontVariationSettings: '"wdth" 100' }}>
               {label}
             </p>
           </div>

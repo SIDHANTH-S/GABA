@@ -48,35 +48,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white text-[var(--color-ink)]">
-      <div className="flex-shrink-0 px-[24px] py-[16px] border-b border-[var(--color-hairline)] bg-[var(--color-subtle)]">
+    <div className="flex h-full min-w-0 flex-col bg-white text-[var(--color-ink)]">
+      <div className="shrink-0 border-b border-[var(--color-hairline)] bg-[var(--color-subtle)] px-4 py-4 sm:px-6">
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <h2 className="text-[13px] font-[590] text-[var(--color-ink)] tracking-[0.2px]">Page Context</h2>
-            <p className="text-[11px] text-[rgba(46,46,46,0.6)] truncate max-w-[230px] mt-1">
+          {/* min-w-0 is required for `truncate` to actually engage on a
+              flex item — without it the title just overflows instead. */}
+          <div className="min-w-0 flex-1">
+            <h2 className="text-[13px] font-[590] tracking-[0.2px] text-[var(--color-ink)]">Page Context</h2>
+            <p className="mt-1 truncate text-[11px] text-[rgba(46,46,46,0.6)]">
               {model?.title || model?.url || 'Waiting for page'}
             </p>
           </div>
           <button
             onClick={refreshModel}
-            className="px-2.5 py-1 text-[11px] font-medium rounded-[6px] bg-white border border-[var(--color-hairline)] text-[var(--color-ink)] hover:bg-[var(--color-subtle)] transition-colors shadow-sm"
+            className="shrink-0 rounded-[6px] border border-[var(--color-hairline)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-ink)] shadow-sm transition-colors hover:bg-[var(--color-subtle)]"
           >
             Refresh
           </button>
         </div>
       </div>
 
-
-
-      <div className="flex-1 overflow-y-auto px-[24px] py-[20px] flex flex-col gap-8">
+      <div className="flex min-w-0 flex-1 flex-col gap-8 overflow-y-auto px-4 py-5 sm:px-6">
         {activeTab === 'page' && (
           <>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-[11px] font-[590] text-[rgba(46,46,46,0.5)] uppercase tracking-[0.5px] mb-2">Entities</h3>
+            <div className="flex min-w-0 flex-col gap-1">
+              <h3 className="mb-2 text-[11px] font-[590] uppercase tracking-[0.5px] text-[rgba(46,46,46,0.5)]">Entities</h3>
               <EntityPanel entities={model?.entities || []} />
             </div>
-            <div className="flex flex-col gap-1 mt-2">
-              <h3 className="text-[11px] font-[590] text-[rgba(46,46,46,0.5)] uppercase tracking-[0.5px] mb-2">Actions</h3>
+            <div className="mt-2 flex min-w-0 flex-col gap-1">
+              <h3 className="mb-2 text-[11px] font-[590] uppercase tracking-[0.5px] text-[rgba(46,46,46,0.5)]">Actions</h3>
               <ActionPanel
                 actions={model?.actions || []}
                 onActionClick={(action) => runAction(`${action.type === 'submit' ? 'Submit' : 'Click'} ${action.label}`)}
@@ -91,20 +91,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab }) => {
           />
         )}
         {activeTab === 'memory' && (
-          <MemoryPanel
-            profile={formattedProfile}
-            memories={memoriesList}
-          />
+          <MemoryPanel profile={formattedProfile} memories={memoriesList} />
         )}
         {activeTab === 'tools' && (
-          <div className="text-sm text-gray-500 italic text-center py-10">Tools available for this page</div>
+          <div className="py-10 text-center text-sm italic text-gray-500">Tools available for this page</div>
         )}
       </div>
 
-      <div className="flex-shrink-0 px-[24px] py-[12px] border-t border-[var(--color-hairline)] text-[11px] text-[rgba(46,46,46,0.6)] bg-[var(--color-subtle-soft)]">
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-[510]">Intent</span>
-          <span className="text-[var(--color-ink)] font-[590] truncate">{model?.pageIntent || 'unknown'}</span>
+      <div className="shrink-0 border-t border-[var(--color-hairline)] bg-[var(--color-subtle-soft)] px-4 py-3 text-[11px] text-[rgba(46,46,46,0.6)] sm:px-6">
+        <div className="flex min-w-0 items-center justify-between gap-3">
+          <span className="shrink-0 font-[510]">Intent</span>
+          {/* Same fix: min-w-0 on the truncated span's flex context. */}
+          <span className="min-w-0 truncate font-[590] text-[var(--color-ink)]">{model?.pageIntent || 'unknown'}</span>
         </div>
       </div>
     </div>

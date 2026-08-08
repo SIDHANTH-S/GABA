@@ -17,11 +17,11 @@ export default function Toolbar() {
   const activeTab = tabs.find((t) => t.id === activeTabId);
   const currentUrl = activeTab?.url || "newtab";
 
-  const [urlInput, setUrlInput] = useState(currentUrl);
+  const [urlInput, setUrlInput] = useState(currentUrl === 'gaba://newtab' || currentUrl === 'gaba://newtab/' ? '' : currentUrl);
   
   // Sync local input when the actual URL changes, but not while user is typing
   useEffect(() => {
-    setUrlInput(currentUrl);
+    setUrlInput(currentUrl === 'gaba://newtab' || currentUrl === 'gaba://newtab/' ? '' : currentUrl);
   }, [currentUrl]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -35,7 +35,7 @@ export default function Toolbar() {
   };
 
   return (
-    <div className="w-full shrink-0 h-[44px] bg-[var(--color-chrome)] pb-[6px]">
+    <div className="w-full shrink-0 h-[44px] bg-[var(--color-chrome)]">
       <div className="flex items-center h-full px-[12px] gap-[20px]">
         
         {/* Left: Navigation */}

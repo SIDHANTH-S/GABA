@@ -20,7 +20,7 @@ export class TabManager {
     this.mainWindow.contentView.addChildView(tab.view);
     
     // Now safe to load the URL
-    tab.view.webContents.loadURL(url || 'https://google.com');
+    tab.view.webContents.loadURL(url || 'gaba://newtab');
     
     // We let WindowManager calculate the initial bounds
     this.activateTab(tab.id);

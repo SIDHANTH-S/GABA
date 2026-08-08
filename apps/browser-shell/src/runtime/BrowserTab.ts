@@ -20,7 +20,7 @@ export class BrowserTab {
   private runtime: BrowserRuntime;
   private favicon?: string;
 
-  constructor(runtime: BrowserRuntime, url: string = 'https://google.com') {
+  constructor(runtime: BrowserRuntime, url: string = 'gaba://newtab') {
     this.id = randomUUID();
     this.runtime = runtime;
     this.view = new WebContentsView();
