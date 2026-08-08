@@ -60,7 +60,7 @@ app.whenReady().then(async () => {
     
     // Initialize browser runtime to get web content view
     if (browserRuntime) {
-      const contentView = browserRuntime.getWebContentView();
+      const contentView = browserRuntime.tabManager.getActiveTab()?.view;
 
       if (!contentView) {
         console.log('[App] Web content view not available yet, skipping CDP setup');
