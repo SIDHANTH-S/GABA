@@ -49,6 +49,9 @@ export async function initDB(): Promise<void> {
   if (!existsSync(schemaPath)) {
     schemaPath = join(__dirname, '..', '..', '..', 'shared', 'schema.sql');
   }
+  if (!existsSync(schemaPath)) {
+    schemaPath = join(__dirname, '..', '..', '..', '..', 'shared', 'schema.sql');
+  }
 
   let schema = '';
   if (existsSync(schemaPath)) {

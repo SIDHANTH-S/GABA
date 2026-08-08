@@ -1,7 +1,16 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
+import { config } from 'dotenv';
 import { BrowserRuntime } from './runtime/BrowserRuntime';
-import { initDB } from './db/db';
+import { initDB, closeDB } from './db/db';
+import { attachCDP } from './agent-core/cdp-bridge';
+import { registerIPCHandlers } from './agent-core/ipc-handlers';
+import { registerGlobalShortcuts, unregisterAll } from './agent-core/global-shortcuts';
+import { buildSemanticModel } from './semantic-parser/semantic-model-builder';
+import { CHANNELS } from './shared/constants';
+
+// Load environment variables
+config();
 
 let mainWindow: BrowserWindow;
 let browserRuntime: BrowserRuntime;
@@ -32,7 +41,7 @@ function createWindow() {
   if (isDev) {
     mainWindow.loadURL('http://localhost:8443');
   } else {
-    // mainWindow.loadFile(path.join(__dirname, '../../frontend/dist/index.html'));
+    mainWindow.loadFile(path.join(__dirname, '../../apps/frontend/dist/index.html'));
   }
 
   // Initialize the Browser Runtime
@@ -40,8 +49,59 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
-  await initDB();
-  createWindow();
+  try {
+    console.log('[App] Initializing...');
+
+    // Initialize database
+    await initDB();
+
+    // Create main window & web content view
+    createWindow();
+    
+    // Initialize browser runtime to get web content view
+    if (browserRuntime) {
+      const contentView = browserRuntime.getWebContentView();
+
+      if (!contentView) {
+        throw new Error('Failed to create web content view');
+      }
+
+      // Attach CDP session to web content view
+      const session = await attachCDP(contentView as any);
+
+      // Register IPC handlers & global shortcuts on main window
+      registerIPCHandlers(mainWindow, session);
+      registerGlobalShortcuts(mainWindow);
+
+      // Function to parse page and send model to React UI
+      const updateSemanticModel = async () => {
+        try {
+          const url = contentView.webContents.getURL();
+          if (!url || url === 'about:blank') return;
+
+          console.log('[App] Extracting semantic model for:', url);
+          const model = await buildSemanticModel(session, url);
+          // @ts-ignore
+          mainWindow?.webContents.send(CHANNELS.PAGE_SUBSCRIBE_UPDATES, model);
+        } catch (err) {
+          console.error('[App] Failed to extract semantic model:', err);
+        }
+      };
+
+      // Attach load/navigate listeners on web content view
+      contentView.webContents.on('did-finish-load', updateSemanticModel);
+      contentView.webContents.on('did-navigate', updateSemanticModel);
+
+      // Initial parse after 1 second delay to ensure DOM is ready
+      setTimeout(updateSemanticModel, 1000);
+    }
+
+    console.log('[App] Initialization complete');
+
+  } catch (err) {
+    console.error('[App] Initialization failed:', err);
+    app.quit();
+  }
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -50,5 +110,10 @@ app.whenReady().then(async () => {
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('will-quit', () => {
+  unregisterAll();
+  closeDB();
 });
 

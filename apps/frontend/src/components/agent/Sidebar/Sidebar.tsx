@@ -8,9 +8,9 @@ import { EntityPanel } from './EntityPanel';
 import { ActionPanel } from './ActionPanel';
 import { DocumentPanel } from './DocumentPanel';
 import { MemoryPanel } from './MemoryPanel';
-import { usePageContext } from '../../../hooks/usePageContext';
-import { useMemory } from '../../../hooks/useMemory';
-import { extractDomain } from '../../../shared/utils';
+import { usePageContext } from '../../hooks/usePageContext';
+import { useMemory } from '../../hooks/useMemory';
+import { extractDomain } from '../../shared/utils';
 
 type Tab = 'entities' | 'actions' | 'documents' | 'memory';
 
