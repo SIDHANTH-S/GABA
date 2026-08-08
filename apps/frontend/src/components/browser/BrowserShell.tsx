@@ -23,6 +23,7 @@ export default function BrowserShell() {
   useCommandBar();
   const { window: { workspaceWidth, workspaceVisible, savedWorkspaceWidth } } = useBrowserStore();
   const [isDragging, setIsDragging] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const animationRef = useRef<number | null>(null);
   
   // Track the actual width locally so we don't depend on the store during animation
@@ -122,18 +123,22 @@ export default function BrowserShell() {
         
         {/* Draggable Splitter */}
         <div 
-          className={`group relative z-10 w-[12px] -mx-[4px] cursor-col-resize select-none shrink-0 ${workspaceWidth < 5 ? 'hidden' : ''}`}
+          className={`relative z-10 w-[12px] -mx-[4px] cursor-col-resize select-none shrink-0 ${workspaceWidth < 5 ? 'hidden' : ''}`}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
+          onPointerEnter={() => setIsHovered(true)}
+          onPointerLeave={() => setIsHovered(false)}
         >
           {/* Visible line centered inside the hit area */}
           <div className={`
-            absolute left-1/2 top-0 bottom-0 -translate-x-1/2
+            absolute left-1/2 top-0 bottom-0 -translate-x-1/2 transition-all duration-150
             ${isDragging 
               ? 'w-[3px] bg-[var(--color-accent)] opacity-40' 
-              : 'w-[1px] bg-[rgba(0,0,0,0.08)] group-hover:w-[2px] group-hover:bg-[var(--color-accent)] transition-all duration-150'}
+              : isHovered
+                ? 'w-[2px] bg-[var(--color-accent)]'
+                : 'w-[1px] bg-[rgba(0,0,0,0.08)]'}
           `} />
         </div>
         
