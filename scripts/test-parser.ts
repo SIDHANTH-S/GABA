@@ -5,8 +5,8 @@
  */
 
 import { app, BrowserWindow } from 'electron';
-import { attachCDP } from '../electron-main/cdp-bridge';
-import { buildSemanticModel } from '../semantic-parser/semantic-model-builder';
+import { attachCDP } from '../apps/browser-shell/src/agent-core/cdp-bridge';
+import { buildSemanticModel } from '../apps/browser-shell/src/semantic-parser/semantic-model-builder';
 
 const args = process.argv.slice(2);
 const urlIndex = args.indexOf('--url');

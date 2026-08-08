@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useAgentStore } from '../../store/agent-store';
-import { useUIStore } from '../../store/ui-store';
+import { useAgentStore } from '../../../store/agent-store';
+import { useUIStore } from '../../../store/ui-store';
 import { TaskProgress } from './TaskProgress';
 
 export function HUD() {
@@ -18,7 +18,7 @@ export function HUD() {
 
   if (!hudVisible || !activePlan) return null;
 
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     pending: 'border-gray-700',
     running: 'border-indigo-500',
     complete: 'border-green-500',

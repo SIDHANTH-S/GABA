@@ -25,13 +25,9 @@ function sendToggle(win: BrowserWindow, source: string): void {
  */
 export function registerGlobalShortcuts(win: BrowserWindow): void {
   // Global shortcut: works even when BrowserView has focus
-  const registered = globalShortcut.register('CommandOrControl+K', () => {
+  globalShortcut.register('CommandOrControl+K', () => {
     sendToggle(win, 'globalShortcut');
   });
-  
-  if (!registered) {
-    console.warn('[Shortcuts] Failed to register global Cmd+K');
-  }
   
   // Window-level input event: catches keystrokes within the main window
   win.webContents.on('before-input-event', (event, input) => {

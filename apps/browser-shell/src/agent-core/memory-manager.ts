@@ -5,7 +5,7 @@
  */
 
 import type { UserProfile, DomainMemory, WorkflowRecording } from '../shared/types';
-import { db } from '../electron-main/db';
+import { db } from '../db/db';
 import { safeJSONParse } from '../shared/utils';
 
 /**

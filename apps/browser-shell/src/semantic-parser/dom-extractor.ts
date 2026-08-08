@@ -6,7 +6,7 @@
 
 import type { CDPSession, AXNode } from '../shared/types';
 import { PARSER_CONFIG } from '../shared/constants';
-import { getAccessibilityTree } from '../electron-main/cdp-bridge';
+import { getAccessibilityTree } from '../agent-core/cdp-bridge';
 
 /**
  * Extract accessibility tree from CDP

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCheckpoint } from '../../hooks/useCheckpoint';
+import { useCheckpoint } from '../../../hooks/useCheckpoint';
 import { ActionDiff } from './ActionDiff';
 
 export function CheckpointModal() {
@@ -7,7 +7,7 @@ export function CheckpointModal() {
 
   if (!isOpen || !payload) return null;
 
-  const riskColors = {
+  const riskColors: Record<string, string> = {
     low: 'border-yellow-500',
     medium: 'border-orange-500',
     high: 'border-red-500',

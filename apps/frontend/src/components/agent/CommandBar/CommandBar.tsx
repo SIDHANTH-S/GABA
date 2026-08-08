@@ -4,9 +4,9 @@
  */
 
 import React, { useState } from 'react';
-import { usePageStore } from '../../store/page-store';
-import { useUIStore } from '../../store/ui-store';
-import { useAgentStore } from '../../store/agent-store';
+import { usePageStore } from '../../../store/page-store';
+import { useUIStore } from '../../../store/ui-store';
+import { useAgentStore } from '../../../store/agent-store';
 import type { TaskPlan } from '../../../shared/types';
 import { CommandInput } from './CommandInput';
 import { SuggestionList } from './SuggestionList';

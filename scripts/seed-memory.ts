@@ -5,8 +5,8 @@
  */
 
 import { app } from 'electron';
-import { initDB } from '../electron-main/db';
-import { setUserProfile, upsertDomainMemory } from '../agent-core/memory-manager';
+import { initDB } from '../apps/browser-shell/src/db/db';
+import { setUserProfile, upsertDomainMemory } from '../apps/browser-shell/src/agent-core/memory-manager';
 
 async function seed() {
   console.log('🌱 Seeding demo profile and memories...');

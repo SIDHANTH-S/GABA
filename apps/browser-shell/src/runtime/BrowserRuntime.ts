@@ -105,4 +105,9 @@ export class BrowserRuntime {
       this.mainWindow.webContents.send('browser:state-update', state);
     }
   }
+
+  public getWebContentView() {
+    const activeTab = this.tabManager.getActiveTab();
+    return activeTab?.view || null;
+  }
 }

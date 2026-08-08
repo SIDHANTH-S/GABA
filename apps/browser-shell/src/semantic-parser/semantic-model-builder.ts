@@ -11,7 +11,7 @@ import { analyzeForms } from './form-analyzer';
 import { classifyIntent } from './page-classifier';
 import { detectDocuments } from './document-detector';
 import { discoverActions } from './action-discoverer';
-import { extractPageSource } from '../electron-main/cdp-bridge';
+import { extractPageSource } from '../agent-core/cdp-bridge';
 import { extractDOMSemantics } from './dom-semantic-extractor';
 
 /**

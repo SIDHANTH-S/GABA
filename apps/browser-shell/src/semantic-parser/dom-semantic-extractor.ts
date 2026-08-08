@@ -14,7 +14,7 @@ import type {
 } from '../shared/types';
 import { ENTITY_PATTERNS, FIELD_TYPE_RULES } from '../shared/constants';
 import { generateId } from '../shared/utils';
-import { executeScript } from '../electron-main/cdp-bridge';
+import { executeScript } from '../agent-core/cdp-bridge';
 
 interface RawField {
   label: string;
@@ -72,7 +72,7 @@ export async function extractDOMSemantics(session: CDPSession): Promise<DomSeman
     entities: detectEntitiesFromText(raw.text || ''),
     forms: raw.forms.map(toSemanticForm),
     actions: dedupeActions(raw.actions.map(toPageAction)),
-    documents: raw.documents.map((doc) => ({
+    documents: raw.documents.map((doc: RawDocument) => ({
       type: doc.type,
       url: doc.url,
       title: doc.title,

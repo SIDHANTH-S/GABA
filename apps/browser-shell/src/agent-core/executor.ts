@@ -10,7 +10,7 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { sleep } from '../shared/utils';
 import { EXECUTION_CONFIG } from '../shared/constants';
-import * as cdp from '../electron-main/cdp-bridge';
+import * as cdp from './cdp-bridge';
 import { isDestructiveAction, requestCheckpoint, calculateRiskLevel } from './verifier';
 import { buildSemanticModel } from '../semantic-parser/semantic-model-builder';
 import { extractToCSV, extractToJSON } from './extractor';

@@ -1,5 +1,5 @@
 import { WebContentsView, BrowserWindow } from 'electron';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { BrowserRuntime } from './BrowserRuntime';
 
 export interface BrowserTabState {
@@ -20,7 +20,7 @@ export class BrowserTab {
   private favicon?: string;
 
   constructor(runtime: BrowserRuntime, url: string = 'https://google.com') {
-    this.id = uuidv4();
+    this.id = randomUUID();
     this.runtime = runtime;
     this.view = new WebContentsView();
 
