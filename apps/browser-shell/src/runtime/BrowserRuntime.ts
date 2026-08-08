@@ -8,6 +8,7 @@ import { NavigationManager } from './NavigationManager';
 import { HistoryManager } from './HistoryManager';
 import { SessionManager } from './SessionManager';
 import { DownloadManager, DownloadState } from './DownloadManager';
+import { AgentController } from './AgentController';
 
 export interface BrowserState {
   activeTabId: string | null;
@@ -35,6 +36,7 @@ export class BrowserRuntime {
   public historyManager: HistoryManager;
   public sessionManager: SessionManager;
   public downloadManager: DownloadManager;
+  public agentController: AgentController;
   
   private mainWindow: BrowserWindow;
   private stateBroadcastTimeout: NodeJS.Timeout | null = null;
@@ -51,6 +53,7 @@ export class BrowserRuntime {
     this.sessionManager = new SessionManager(this);
     
     this.controller = new BrowserController(this);
+    this.agentController = new AgentController(this, mainWindow);
 
     // Initial setup
     this.sessionManager.restoreSession();

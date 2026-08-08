@@ -11,9 +11,16 @@ import Toolbar from "./Toolbar";
 import TabStrip from "./TabStrip";
 import WebView from "./WebView";
 import AIWorkspace from "./workspace/AIWorkspace";
+import { CommandBar } from "../agent/CommandBar/CommandBar";
+import { HUD } from "../agent/HUD/HUD";
+import { CheckpointModal } from "../agent/Checkpoint/CheckpointModal";
 import { useBrowserStore } from "../../store/browser";
+import { useAgent } from "../../hooks/useAgent";
+import { useCommandBar } from "../../hooks/useCommandBar";
 
 export default function BrowserShell() {
+  useAgent();
+  useCommandBar();
   const { window: { workspaceWidth, workspaceVisible, savedWorkspaceWidth } } = useBrowserStore();
   const [isDragging, setIsDragging] = useState(false);
   const animationRef = useRef<number | null>(null);
@@ -134,6 +141,10 @@ export default function BrowserShell() {
           <AIWorkspace />
         </div>
       </div>
+
+      <CommandBar />
+      <HUD />
+      <CheckpointModal />
     </div>
   );
 }

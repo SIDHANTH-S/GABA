@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { BrowserRuntime } from './runtime/BrowserRuntime';
+import { initDB } from './db/db';
 
 let mainWindow: BrowserWindow;
 let browserRuntime: BrowserRuntime;
@@ -38,7 +39,8 @@ function createWindow() {
   browserRuntime = new BrowserRuntime(mainWindow);
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await initDB();
   createWindow();
 
   app.on('activate', function () {
