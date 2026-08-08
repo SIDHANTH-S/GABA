@@ -15,9 +15,9 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ actions, onActionClick
 
   if (actions.length === 0) {
     return (
-      <div className="rounded-md border border-[#2a2a2a] bg-[#111111] p-4">
-        <h3 className="text-sm font-medium text-white">No actions detected</h3>
-        <p className="mt-1 text-xs leading-5 text-gray-500">
+      <div className="rounded-[10px] border border-[var(--color-hairline)] bg-[var(--color-subtle-soft)] p-[16px]">
+        <h3 className="text-[12px] font-[590] text-[var(--color-ink)]">No actions detected</h3>
+        <p className="mt-1 text-[11px] leading-[16px] text-[rgba(46,46,46,0.5)]">
           Buttons and links will appear here once the page exposes interactive elements.
         </p>
       </div>
@@ -28,21 +28,21 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ actions, onActionClick
     <div className="space-y-4">
       {Object.entries(groupedActions).map(([type, items]) => (
         <section key={type} className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase">{type}</h3>
-            <span className="text-[10px] text-gray-500">{items.length}</span>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-[10px] font-semibold text-[rgba(46,46,46,0.4)] uppercase tracking-[0.5px]">{type}</h3>
+            <span className="text-[10px] text-[rgba(46,46,46,0.4)]">{items.length}</span>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-[6px]">
             {items.map((action) => (
               <button
                 key={action.id}
-                className="group w-full p-2.5 rounded-md bg-[#111111] border border-[#242424] hover:border-indigo-500/60 transition-colors text-left"
+                className="group w-full p-[10px] rounded-[10px] bg-white border border-[var(--color-hairline)] hover:border-[var(--color-accent)] hover:shadow-chip transition-all text-left"
                 onClick={() => onActionClick?.(action)}
               >
-                <span className="block text-sm text-white font-medium truncate">{action.label}</span>
-                <span className="mt-1 block text-xs text-gray-500 truncate">{action.context}</span>
-                <code className="mt-1.5 block text-[10px] text-gray-600 truncate">{action.selector}</code>
+                <span className="block text-[12px] text-[var(--color-ink)] font-[590] truncate tracking-tight">{action.label}</span>
+                <span className="mt-[2px] block text-[11px] text-[rgba(46,46,46,0.6)] truncate">{action.context}</span>
+                <code className="mt-1.5 block text-[9px] text-[rgba(46,46,46,0.4)] truncate bg-[var(--color-subtle)] px-1.5 py-0.5 rounded-[4px]">{action.selector}</code>
               </button>
             ))}
           </div>

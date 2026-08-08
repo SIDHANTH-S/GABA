@@ -12,9 +12,9 @@ export const DocumentPanel: React.FC<DocumentPanelProps> = ({
 }) => {
   if (documents.length === 0) {
     return (
-      <div className="rounded-md border border-[#2a2a2a] bg-[#111111] p-4">
-        <h3 className="text-sm font-medium text-white">No documents found</h3>
-        <p className="mt-1 text-xs leading-5 text-gray-500">
+      <div className="rounded-[10px] border border-[var(--color-hairline)] bg-[var(--color-subtle-soft)] p-[16px]">
+        <h3 className="text-[12px] font-[590] text-[var(--color-ink)]">No documents found</h3>
+        <p className="mt-1 text-[11px] leading-[16px] text-[rgba(46,46,46,0.5)]">
           PDFs, invoices, bills, reports, and spreadsheets will appear here when detected.
         </p>
       </div>
@@ -22,22 +22,22 @@ export const DocumentPanel: React.FC<DocumentPanelProps> = ({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-[6px]">
       {documents.map((doc) => (
         <div
           key={`${doc.type}:${doc.url}`}
-          className="p-2.5 rounded-md bg-[#111111] border border-[#242424]"
+          className="p-[12px] rounded-[10px] bg-white border border-[var(--color-hairline)] shadow-chip"
         >
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <div className="text-sm text-white font-medium truncate">{doc.title || 'Untitled document'}</div>
-              <div className="mt-1 text-xs text-gray-500 truncate">{doc.type}</div>
-              <div className="mt-1 text-[10px] text-gray-600 truncate">{doc.url}</div>
+              <div className="text-[12px] text-[var(--color-ink)] font-[590] truncate tracking-tight">{doc.title || 'Untitled document'}</div>
+              <div className="mt-[2px] text-[11px] text-[rgba(46,46,46,0.6)] truncate">{doc.type}</div>
+              <div className="mt-1 text-[9px] text-[rgba(46,46,46,0.4)] truncate">{doc.url}</div>
             </div>
             {onExtractDocument && (
               <button
                 onClick={() => onExtractDocument(doc)}
-                className="px-2 py-1 text-xs rounded-md bg-[#1a1a1a] border border-[#2a2a2a] text-gray-300 hover:text-white hover:border-indigo-500 transition-colors"
+                className="px-2.5 py-1 text-[11px] font-medium rounded-[6px] bg-white border border-[var(--color-hairline)] text-[var(--color-ink)] hover:bg-[var(--color-subtle)] transition-colors shadow-sm"
               >
                 Open
               </button>

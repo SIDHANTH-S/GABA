@@ -12,10 +12,13 @@ import { usePageContext } from '../../../hooks/usePageContext';
 import { useMemory } from '../../../hooks/useMemory';
 import { extractDomain } from '../../../shared/utils';
 
-type Tab = 'entities' | 'actions' | 'documents' | 'memory';
+type SidebarTab = 'page' | 'docs' | 'memory' | 'tools';
 
-export const Sidebar: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('entities');
+interface SidebarProps {
+  activeTab: SidebarTab;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab }) => {
   const { model, refreshModel } = usePageContext();
   const { profile, domainMemory, loadDomainMemory } = useMemory();
 
@@ -39,63 +42,49 @@ export const Sidebar: React.FC = () => {
       }))
     : [];
 
-  const tabs: { id: Tab; label: string; count: number }[] = [
-    { id: 'entities', label: 'Entities', count: model?.entities?.length || 0 },
-    { id: 'actions', label: 'Actions', count: model?.actions?.length || 0 },
-    { id: 'documents', label: 'Docs', count: model?.documents?.length || 0 },
-    { id: 'memory', label: 'Memory', count: memoriesList.length },
-  ];
-
   const runAction = (label: string) => {
     // @ts-ignore
     window.electronAPI?.runTask?.({ intent: label });
   };
 
   return (
-    <div className="h-full flex flex-col bg-[rgba(15,15,15,0.94)] backdrop-blur-[20px] text-white">
-      <div className="flex-shrink-0 px-4 py-3 border-b border-[#2a2a2a]">
+    <div className="h-full flex flex-col bg-white text-[var(--color-ink)]">
+      <div className="flex-shrink-0 px-[24px] py-[16px] border-b border-[var(--color-hairline)] bg-[var(--color-subtle)]">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-sm font-semibold">Page Context</h2>
-            <p className="text-xs text-gray-500 truncate max-w-[230px]">
+            <h2 className="text-[13px] font-[590] text-[var(--color-ink)] tracking-[0.2px]">Page Context</h2>
+            <p className="text-[11px] text-[rgba(46,46,46,0.6)] truncate max-w-[230px] mt-1">
               {model?.title || model?.url || 'Waiting for page'}
             </p>
           </div>
           <button
             onClick={refreshModel}
-            className="px-2 py-1 text-xs rounded-md bg-[#1a1a1a] border border-[#2a2a2a] text-gray-300 hover:text-white hover:border-indigo-500 transition-colors"
+            className="px-2.5 py-1 text-[11px] font-medium rounded-[6px] bg-white border border-[var(--color-hairline)] text-[var(--color-ink)] hover:bg-[var(--color-subtle)] transition-colors shadow-sm"
           >
             Refresh
           </button>
         </div>
       </div>
 
-      <div className="flex-shrink-0 grid grid-cols-4 border-b border-[#2a2a2a] bg-[#1a1a1a]">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`min-w-0 px-2 py-2.5 text-xs font-medium transition-colors border-b ${
-              activeTab === tab.id
-                ? 'text-white bg-[#242424] border-indigo-500'
-                : 'text-gray-500 border-transparent hover:text-gray-200'
-            }`}
-          >
-            <span className="block truncate">{tab.label}</span>
-            <span className="mt-0.5 block text-[10px] text-gray-500">{tab.count}</span>
-          </button>
-        ))}
-      </div>
 
-      <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === 'entities' && <EntityPanel entities={model?.entities || []} />}
-        {activeTab === 'actions' && (
-          <ActionPanel
-            actions={model?.actions || []}
-            onActionClick={(action) => runAction(`${action.type === 'submit' ? 'Submit' : 'Click'} ${action.label}`)}
-          />
+
+      <div className="flex-1 overflow-y-auto px-[24px] py-[20px] flex flex-col gap-8">
+        {activeTab === 'page' && (
+          <>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-[11px] font-[590] text-[rgba(46,46,46,0.5)] uppercase tracking-[0.5px] mb-2">Entities</h3>
+              <EntityPanel entities={model?.entities || []} />
+            </div>
+            <div className="flex flex-col gap-1 mt-2">
+              <h3 className="text-[11px] font-[590] text-[rgba(46,46,46,0.5)] uppercase tracking-[0.5px] mb-2">Actions</h3>
+              <ActionPanel
+                actions={model?.actions || []}
+                onActionClick={(action) => runAction(`${action.type === 'submit' ? 'Submit' : 'Click'} ${action.label}`)}
+              />
+            </div>
+          </>
         )}
-        {activeTab === 'documents' && (
+        {activeTab === 'docs' && (
           <DocumentPanel
             documents={model?.documents || []}
             onExtractDocument={(doc) => runAction(`Download ${doc.title}`)}
@@ -107,12 +96,15 @@ export const Sidebar: React.FC = () => {
             memories={memoriesList}
           />
         )}
+        {activeTab === 'tools' && (
+          <div className="text-sm text-gray-500 italic text-center py-10">Tools available for this page</div>
+        )}
       </div>
 
-      <div className="flex-shrink-0 px-4 py-2 border-t border-[#2a2a2a] text-xs text-gray-500">
+      <div className="flex-shrink-0 px-[24px] py-[12px] border-t border-[var(--color-hairline)] text-[11px] text-[rgba(46,46,46,0.6)] bg-[var(--color-subtle-soft)]">
         <div className="flex items-center justify-between gap-3">
-          <span>Intent</span>
-          <span className="text-gray-300 font-medium truncate">{model?.pageIntent || 'unknown'}</span>
+          <span className="font-[510]">Intent</span>
+          <span className="text-[var(--color-ink)] font-[590] truncate">{model?.pageIntent || 'unknown'}</span>
         </div>
       </div>
     </div>

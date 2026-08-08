@@ -18,9 +18,9 @@ export const EntityPanel: React.FC<EntityPanelProps> = ({ entities }) => {
 
   if (entities.length === 0) {
     return (
-      <div className="rounded-md border border-[#2a2a2a] bg-[#111111] p-4">
-        <h3 className="text-sm font-medium text-white">No entities yet</h3>
-        <p className="mt-1 text-xs leading-5 text-gray-500">
+      <div className="rounded-[10px] border border-[var(--color-hairline)] bg-[var(--color-subtle-soft)] p-[16px]">
+        <h3 className="text-[12px] font-[590] text-[var(--color-ink)]">No entities yet</h3>
+        <p className="mt-1 text-[11px] leading-[16px] text-[rgba(46,46,46,0.5)]">
           Refresh after the page finishes loading, or navigate to a page with prices, dates, contacts, or order details.
         </p>
       </div>
@@ -31,26 +31,26 @@ export const EntityPanel: React.FC<EntityPanelProps> = ({ entities }) => {
     <div className="space-y-4">
       {Object.entries(groupedEntities).map(([type, items]) => (
         <section key={type} className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase">{type}</h3>
-            <span className="text-[10px] text-gray-500">{items.length}</span>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-[10px] font-semibold text-[rgba(46,46,46,0.4)] uppercase tracking-[0.5px]">{type}</h3>
+            <span className="text-[10px] text-[rgba(46,46,46,0.4)]">{items.length}</span>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-[6px]">
             {items.map((entity) => (
               <button
                 key={entity.id}
-                className="group w-full flex items-start justify-between gap-2 p-2 rounded-md bg-[#111111] border border-[#242424] hover:border-indigo-500/60 transition-colors text-left"
+                className="group w-full flex items-start justify-between gap-2 p-[10px] rounded-[10px] bg-white border border-[var(--color-hairline)] hover:border-[var(--color-accent)] hover:shadow-chip transition-all text-left"
                 onClick={() => copyToClipboard(entity.value)}
                 title="Copy value"
               >
                 <span className="min-w-0">
-                  <span className="block text-sm text-white font-mono truncate">{entity.value}</span>
+                  <span className="block text-[12px] text-[var(--color-ink)] font-mono truncate tracking-tight">{entity.value}</span>
                   {entity.normalizedValue && entity.normalizedValue !== entity.value && (
-                    <span className="block text-xs text-gray-500 truncate">{entity.normalizedValue}</span>
+                    <span className="block text-[10px] text-[rgba(46,46,46,0.5)] truncate mt-[2px]">{entity.normalizedValue}</span>
                   )}
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1a1a1a] text-gray-400">
+                <span className="text-[9px] px-[6px] py-[2px] rounded-[4px] bg-[var(--color-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] font-medium">
                   {Math.round(entity.confidence * 100)}%
                 </span>
               </button>
