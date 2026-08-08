@@ -90,3 +90,17 @@ The database (`user-data/ai-browser.db`) has the following structure:
 ---
 
 **Next Steps**: If you are tasked with modifying this codebase, begin by identifying which side of the IPC boundary your change belongs to. State originates in the Backend (`apps/browser-shell`), and the Frontend (`apps/frontend`) is purely a reflection of that state plus user intent.
+
+---
+
+## 6. Native Hybrid Protocol Architecture (GABA New Tab)
+*Updated: 2026-08-08T23:20:00*
+
+The application supports a custom `gaba://` protocol registered in Electron (`main.ts`).
+The GABA New Tab (`gaba://newtab`) is implemented as a Native Hybrid:
+- It is NOT a web page loaded over HTTP.
+- It is NOT a translucent overlay over the Chromium PageView.
+- It is a dedicated 4th native Chromium `WebContentsView` (`newTabView` in `BrowserRuntime.ts`) which specifically renders the React `StartPage.tsx` component.
+- When the state URL is `gaba://newtab`, `WindowManager.ts` positions `newTabView` exactly over the content area, and explicitly moves the `chromeView` PageView off-screen to `-9999`.
+- When navigating to a normal web URL, `newTabView` is moved off-screen, and PageView takes over.
+- This fully integrates with the Electron navigation stack, meaning standard Back/Forward browser history accurately captures New Tab interactions.
