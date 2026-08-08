@@ -119,7 +119,7 @@ function buildTaskPlan(
   intent: string,
   model: SemanticPageModel
 ): TaskPlan {
-  const steps: PlanStep[] = validated.steps.map((step, index) => ({
+  const steps: PlanStep[] = validated.steps.map((step: any, index: number) => ({
     id: generateId('step'),
     sequence: index + 1,
     description: step.description,

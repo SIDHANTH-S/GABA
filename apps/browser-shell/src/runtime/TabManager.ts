@@ -87,7 +87,7 @@ export class TabManager {
   public recalculateBounds() {
     if (this.mainWindow.isDestroyed()) return;
     
-    const [width, height] = this.mainWindow.getSize();
+    const { width, height } = this.mainWindow.getContentBounds();
     const windowManager = this.runtime.windowManager;
     const currentWorkspaceWidth = windowManager.workspaceWidth;
     

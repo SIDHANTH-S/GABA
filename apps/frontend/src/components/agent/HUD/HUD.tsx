@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useAgentStore } from '../../../store/agent-store';
-import { useUIStore } from '../../../store/ui-store';
+import { useAgentStore } from "@/store/agent-store";
+import { useUIStore } from "@/store/ui-store";
 import { TaskProgress } from './TaskProgress';
 
 export function HUD() {

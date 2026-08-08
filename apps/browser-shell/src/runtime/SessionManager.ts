@@ -52,7 +52,8 @@ export class SessionManager {
     }
 
     // Fallback if no session
-    this.runtime.tabManager.createTab('https://google.com');
+    const id = this.runtime.tabManager.createTab('https://google.com');
+    this.runtime.tabManager.activateTab(id);
   }
 
   private saveSession() {

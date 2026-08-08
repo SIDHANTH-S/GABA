@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCheckpoint } from '../../../hooks/useCheckpoint';
+import { useCheckpoint } from "@/hooks/useCheckpoint";
 import { ActionDiff } from './ActionDiff';
 
 export function CheckpointModal() {
