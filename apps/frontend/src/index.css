@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Fonts — resolved from the Figma import.
+   SF Pro (Regular/Medium/Semibold) and Crimson Text Bold are served from the
+   Figma static CDN. Segoe UI and Times New Roman are host/system faces and
+   fall back to their native stacks.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'SF Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://static.figma.com/font/SF-Pro_1') format('woff2');
+}
+@font-face {
+  font-family: 'SF Pro';
+  font-style: normal;
+  font-weight: 510;
+  font-display: swap;
+  src: url('https://static.figma.com/font/SF-Pro_1') format('woff2');
+}
+@font-face {
+  font-family: 'SF Pro';
+  font-style: normal;
+  font-weight: 590;
+  font-display: swap;
+  src: url('https://static.figma.com/font/SF-Pro_1') format('woff2');
+}
+@font-face {
+  font-family: 'Crimson Text';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://static.figma.com/font/CrimsonText-Bold_2') format('woff2');
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens — the AI-native browser design system.
+--------------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Crimson Text', 'Times New Roman', serif;
+  --font-ui: 'Segoe UI', -apple-system, sans-serif;
+
+  /* Ink */
+  --color-ink: #2e2e2e;
+  --color-ink-strong: #2f2f2f;
+
+  /* Brand / accent */
+  --color-accent: #0a84ff;
+  --color-accent-strong: #0072ed;
+
+  /* Surfaces */
+  --color-chrome: rgba(201, 201, 201, 0.4);
+  --color-surface: #ffffff;
+  --color-subtle: rgba(249, 249, 251, 0.9);
+  --color-subtle-soft: rgba(249, 249, 251, 0.6);
+
+  /* Success (composer benefits) */
+  --color-success: #146f31;
+  --color-success-ink: #125e07;
+  --color-success-wash: rgba(52, 199, 89, 0.12);
+
+  /* Hairlines */
+  --color-hairline: rgba(0, 0, 0, 0.06);
+
+  /* Radii — 8px system derived */
+  --radius-chrome: 8px;
+  --radius-panel: 12px;
+  --radius-card: 10px;
+  --radius-pill: 100px;
+
+  /* Shadows */
+  --shadow-chip: 0px 1px 3px 0px rgba(0, 0, 0, 0.06);
+  --shadow-composer: 0px 1px 3px 0px rgba(0, 0, 0, 0.18);
+  --shadow-window: 0px 12px 50px 0px rgba(0, 0, 0, 0.4);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}

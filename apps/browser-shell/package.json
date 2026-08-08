@@ -1,0 +1,25 @@
+{
+  "name": "browser-shell",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "tsc && electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "@types/electron": "^1.4.38",
+    "@types/node": "^24.13.3",
+    "@types/uuid": "^10.0.0",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "tsc-alias": "^1.9.1",
+    "tsx": "^4.23.11",
+    "typescript": "^7.0.2"
+  }
+}

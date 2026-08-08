@@ -1,0 +1,10 @@
+{
+  "description": "An AI-native browser interface offering a sleek, responsive workspace with contextual AI tools to enhance user productivity and browsing experience.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
