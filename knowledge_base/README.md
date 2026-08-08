@@ -1,84 +1,60 @@
-# AI-Native Execution Browser - Knowledge Base
+# AI Browser - Knowledge Base
 
-**Project Type:** Electron-based AI-powered browser automation system  
-**Target:** MVP demonstration for jury evaluation  
-**Last Updated:** 2026-08-07
+This `knowledge_base` is the **canonical documentation layer** for the AI-Native Execution Browser repository. 
 
-## Quick Navigation
+It was completely rebuilt during a rigorous forensic audit to ensure it strictly reflects the **CURRENT IMPLEMENTATION** of the codebase, explicitly removing any hallucinations, stale plans, or unfulfilled architecture claims from earlier documentation.
 
-- [Architecture Overview](./architecture/README.md)
-- [Implementation Specs](./specs/README.md)
-- [API Integration](./api/README.md)
-- [Development Guide](./dev/README.md)
+---
 
-## What This Project Does
+## ⚠️ Source-of-Truth Hierarchy
 
-An Electron desktop app that wraps Chromium with an AI agent layer. Users issue natural language commands (Cmd+K) that convert into deterministic web interactions—clicking, filling, extracting, navigating—without manual effort.
+When AI agents or engineers need to determine how this application works, you must consult sources in the following strict order of priority:
 
-**Key Principles:**
-- Execution over conversation (progress bars, not chat)
-- Semantic parsing over visual (accessibility tree, not screenshots)
-- Local-first AI (no cloud dependency for core parsing)
-- Privacy-first (PII redacted before LLM calls)
-- Non-destructive UI (never obscure webpage content)
+1. **Current Code** (The Ultimate Source of Truth) - What is actually running in `apps/browser-shell` and `apps/frontend`.
+2. **This Knowledge Base** (The Secondary Source) - Reconstructed from the code itself.
+3. **Old Plans & Conversation History** (Untrusted) - Do NOT rely on prior conversation claims, original MVP specs, or deprecated AI models (e.g., Anthropic Claude mentions in old chats).
 
-## Project Structure
+---
 
-```
-knowledge_base/
-├── README.md                    # This file
-├── architecture/                # System design & technical decisions
-│   ├── README.md
-│   ├── core-architecture.md
-│   └── tech-stack.md
-├── specs/                       # Detailed implementation specifications
-│   ├── README.md
-│   ├── mvp-spec.md              # Complete MVP technical spec
-│   ├── scope-evolution.md       # Extended scope changes
-│   └── feature-matrix.md
-├── api/                         # AI service integration
-│   ├── README.md
-│   ├── deepseek-integration.md
-│   └── qwen-integration.md
-└── dev/                         # Development guides
-    ├── README.md
-    ├── setup.md
-    └── testing.md
-```
+## Documentation Structure
 
-## Core Features (10 MVP Demo Points)
+- **[`AGENT_BRIEFING.md`](./AGENT_BRIEFING.md)**
+  **Start here.** The master quick-start guide for future AI agents, covering state ownership, IPC, entry points, and strict contribution rules.
+  
+- **[`architecture/`](./architecture/)**
+  Detailed architecture maps reflecting the true process model, state ownership, IPC contracts, and security posture.
+  
+- **[`api/`](./api/)**
+  Documents the current actual AI integrations (NVIDIA NIM) and notes on legacy or deprecated reference integrations.
+  
+- **[`codebase/`](./codebase/)**
+  Precise repository maps, module catalogs, and known technical debt/gaps discovered during the forensic audit.
+  
+- **[`dev/`](./dev/)**
+  Guides for setting up the environment, running the application, and troubleshooting.
+  
+- **[`specs/`](./specs/)**
+  The factual feature matrix of what is actually implemented, scaffolded, or planned.
 
-1. **Smart Form Filler** - Auto-maps user profile to any form
-2. **Intent Command Bar** - Cmd+K for natural language tasks
-3. **Live Page Understanding** - Real-time entity/action extraction
-4. **Task Progress HUD** - Minimal execution status overlay
-5. **Contextual Memory** - Per-domain input/preference recall
-6. **Universal Extractor** - Save any page as JSON/CSV
-7. **Workflow Recorder** - Record once, replay automation
-8. **Smart Tab Grouping** - Auto-organize by intent
-9. **Document Action Hub** - PDF/bill detection with actions
-10. **Verification Checkpoint** - User confirmation before destructive actions
+---
 
-## Technology Stack
+## How to use this Knowledge Base
 
-- **Runtime:** Electron (Chromium + Node.js)
-- **Frontend:** React + Vite + TypeScript
-- **Styling:** Tailwind CSS (Linear/Apple aesthetic)
-- **State:** Zustand
-- **Storage:** SQLite (better-sqlite3)
-- **Page Control:** CDP (Chrome DevTools Protocol)
-- **AI:** Anthropic Claude (via SDK)
+**For AI Agents:**
+Read `AGENT_BRIEFING.md` in its entirety before modifying the codebase. If you are modifying a specific system (e.g., the state store), read `architecture/state-ownership.md` first. Do NOT invent APIs or write code based on how you *think* it should work. Trace the current IPC and runtime models.
 
-## Getting Started
+**How to Update:**
+If you make a major architectural change (e.g., swapping the SQLite database for a different engine, or migrating the LLM provider), you MUST update the corresponding documentation in this directory. Do not leave the knowledge base in a stale state.
 
-See [Development Guide](./dev/README.md) for setup instructions.
+---
 
-## Documentation Status
+## Audit Reconciliation Record (August 2026)
 
-| Document | Status | Location |
-|----------|--------|----------|
-| MVP Technical Spec | ✅ Complete | `specs/mvp-spec.md` |
-| Architecture Design | ✅ Complete | `architecture/` |
-| API Integration Guides | ✅ Complete | `api/` |
-| Setup Instructions | ✅ Complete | `dev/setup.md` |
-| Scope Evolution Log | ✅ Complete | `specs/scope-evolution.md` |
+The original knowledge base contained several discrepancies between what was planned/documented and what was actually implemented. The following reconciliations were made:
+
+- **[OUTDATED] LLM Provider**: Old documentation claimed the system used Anthropic Claude via `@anthropic-ai/sdk`. **Reality**: The system uses the NVIDIA NIM API (`https://integrate.api.nvidia.com/v1/chat/completions`) via direct HTTP fetch. The docs have been updated.
+- **[PARTIAL] SQLite Schema**: The documentation and `schema.sql` defined `task_history` and `tab_groups` tables. **Reality**: The `initDB()` fallback schema omitted these, and `taskHistory` is actually stored as a JSON array inside the `domain_memory` table. The docs have been updated to reflect this inconsistency.
+- **[SCAFFOLDED] Tab Management**: IPC handlers for advanced tab management (`TABS_GET_GROUPS`, `TABS_GROUP_BY_INTENT`) are currently stubbed and return empty arrays.
+- **[CURRENT] State Model**: The frontend React app does not mutate browser state. It acts strictly as a view layer and mirror for state pushed from the Electron Main Process via IPC.
+
+*See `codebase/known-gaps.md` for a complete list of technical debt and unverified areas.*

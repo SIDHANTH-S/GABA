@@ -21,9 +21,9 @@ function createWindow() {
     height: 900,
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#ffffff', // Match your toolbar/chrome background
+      color: '#e8e8e8', // Match your toolbar/chrome background
       symbolColor: '#2e2e2e',
-      height: 36 // Roughly the height of the TabStrip or Toolbar
+      height: 42 // Match the height of the TabStrip (42px)
     },
     autoHideMenuBar: true,
     webPreferences: {
@@ -36,16 +36,12 @@ function createWindow() {
     // transparent: true,
   });
 
-  // Load the React Vite Dev Server (or built files)
-  const isDev = !app.isPackaged;
-  if (isDev) {
-    mainWindow.loadURL('http://localhost:8443');
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../../apps/frontend/dist/index.html'));
-  }
+  // We no longer load the React app into the mainWindow directly.
+  // Instead, the BrowserRuntime manages the UI WebContentsViews.
 
   // Initialize the Browser Runtime
   browserRuntime = new BrowserRuntime(mainWindow);
+  browserRuntime.initializeUIViews();
 }
 
 app.whenReady().then(async () => {
@@ -71,7 +67,7 @@ app.whenReady().then(async () => {
       const session = await attachCDP(contentView as any);
 
       // Register IPC handlers & global shortcuts on main window
-      registerIPCHandlers(mainWindow, session);
+      registerIPCHandlers(browserRuntime, session);
       registerGlobalShortcuts(mainWindow);
 
       // Function to parse page and send model to React UI
@@ -82,8 +78,7 @@ app.whenReady().then(async () => {
 
           console.log('[App] Extracting semantic model for:', url);
           const model = await buildSemanticModel(session, url);
-          // @ts-ignore
-          mainWindow?.webContents.send(CHANNELS.PAGE_SUBSCRIBE_UPDATES, model);
+          browserRuntime.broadcastIPC(CHANNELS.PAGE_SUBSCRIBE_UPDATES, model);
         } catch (err) {
           console.error('[App] Failed to extract semantic model:', err);
         }

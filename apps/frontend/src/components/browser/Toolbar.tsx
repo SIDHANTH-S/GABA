@@ -6,6 +6,8 @@ import {
   RefreshIcon,
   CopyLinkIcon,
   SettingsIcon,
+  DownloadsIcon,
+  SidebarIcon,
 } from "./icons";
 import { IconButton } from "./ui/primitives";
 
@@ -90,6 +92,14 @@ export default function Toolbar() {
           </IconButton>
           <IconButton label="Page settings">
             <SettingsIcon />
+          </IconButton>
+          <IconButton label="Downloads">
+            <DownloadsIcon />
+          </IconButton>
+          <IconButton label="Toggle sidebar" onClick={() => {
+            window.browser?.toggleWorkspace();
+          }}>
+            <SidebarIcon />
           </IconButton>
         </div>
 

@@ -1,5 +1,4 @@
 import { useBrowserStore } from "../../store/browser";
-import { SidebarIcon, DownloadsIcon, SplitIcon } from "./icons";
 import { IconButton } from "./ui/primitives";
 
 export default function TabStrip() {
@@ -63,23 +62,6 @@ export default function TabStrip() {
       </button>
       </div>
 
-      {/* Right: Actions and OS Window Controls Spacer */}
-      <div className="flex items-center gap-[8px] pb-[6px] pl-[16px] [-webkit-app-region:no-drag]">
-        <IconButton label="Downloads">
-          <DownloadsIcon />
-        </IconButton>
-        <IconButton label="Toggle sidebar" onClick={() => {
-          console.log('[TabStrip] Toggle clicked!');
-          window.browser?.toggleWorkspace();
-        }}>
-          <SidebarIcon />
-        </IconButton>
-        <IconButton label="Split view">
-          <SplitIcon />
-        </IconButton>
-        {/* Spacer for Windows native titleBarOverlay controls */}
-        <div className="w-[140px] pointer-events-none" />
-      </div>
     </div>
   );
 }

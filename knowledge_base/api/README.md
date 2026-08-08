@@ -1,5 +1,11 @@
 # AI Service Integration
 
+> [!WARNING]
+> **[OUTDATED / SUPERSEDED]**
+> This document refers to legacy plans using Anthropic Claude, DeepSeek, and Qwen. 
+> The **current verified implementation** uses the **NVIDIA NIM API** for LLM execution (`agent-core/llm-client.ts`). 
+> Please refer to `AGENT_BRIEFING.md` for current AI integration facts.
+
 ## Overview
 
 This project uses third-party AI chat completion APIs for LLM-powered task planning. Two implementations are provided as reference:
