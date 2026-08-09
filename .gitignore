@@ -6,7 +6,8 @@ node_modules/
 dist/
 dist-electron/
 out/
-
+*.pyc
+__pycache__/
 # Environment
 .env
 .env.local
@@ -16,7 +17,7 @@ user-data/
 *.db
 *.db-shm
 *.db-wal
-
+knowledge_base/api/reference/
 # Logs
 logs/
 *.log

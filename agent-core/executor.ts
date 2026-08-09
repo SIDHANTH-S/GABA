@@ -14,7 +14,7 @@ import * as cdp from '../electron-main/cdp-bridge';
 import { isDestructiveAction, requestCheckpoint, calculateRiskLevel } from './verifier';
 import { buildSemanticModel } from '../semantic-parser/semantic-model-builder';
 import { extractToCSV, extractToJSON } from './extractor';
-
+-
 /**
  * Execute task plan step-by-step
  */
